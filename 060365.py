@@ -114,7 +114,7 @@ def GetSignSingle(imgframe):
 
 
 
-cap = cv2.VideoCapture(".\\video\\664992296.522524.mp4")
+cap = cv2.VideoCapture(".\\video\\newvideo3.mp4")
 img = cv2.imread(".\\img\\16t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 ret, frame = cap.read()
@@ -189,6 +189,9 @@ while ret:
                 cv2.rectangle(frame, (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
                 y = startY - 15 if startY-15>15 else startY+15
                 cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)
+                cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+                cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+            
 
     template=-1
     (template, top_left, scale, val) = GetSignSingle(frame)
@@ -222,6 +225,11 @@ while ret:
                 cv2.putText(frame,'Direct',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 print("direct")
 
+            # if ret :
+            #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+            #     stop()
+            # else :
+            #     print ("direct")
 
             print(center_match)
             print(img[center_match[0], center_match[1]])
@@ -234,9 +242,9 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(copyimg,'Turn_Right',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 turn_right()
-            elif ret :
-                cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-                stop()
+            # elif ret :
+            #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+            #     stop()
             else :
                 cv2.putText(copyimg,'Direct',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 print("direct")
