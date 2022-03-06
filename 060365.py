@@ -114,7 +114,7 @@ def GetSignSingle(imgframe):
 
 
 
-cap = cv2.VideoCapture(".\\video\\664992297.086964.mp4")
+cap = cv2.VideoCapture(".\\video\\664992296.522524.mp4")
 img = cv2.imread(".\\img\\16t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 ret, frame = cap.read()
