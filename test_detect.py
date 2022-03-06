@@ -112,12 +112,10 @@ def GetSignSingle(imgframe):
     else:
         return (curMaxTemplate%3, curMaxLoc, 1 - int(curMaxTemplate/3)*0.2, curMaxVal)
 
-        
 
 
-
-cap = cv2.VideoCapture(0)
-img = cv2.imread(".\\img\\12t.png")
+cap = cv2.VideoCapture(".\\video\\664992297.086964.mp4")
+img = cv2.imread(".\\img\\16t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 ret, frame = cap.read()
 
@@ -152,7 +150,7 @@ ret, frame = cap.read()
 #                     cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255,255,255), 1)
 #         break
 
-hw,hh=(200,200)
+hw,hh=(700,700)
 focus=(800,500)
 memory=10
 center_memory=np.zeros((memory,2))
@@ -181,7 +179,7 @@ while ret:
         for i in np.arange(0, detections.shape[2]):
             percent = detections[0,0,i,2]
             #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
-            if percent > 0.5:
+            if percent > 0.7:
                 class_index = int(detections[0,0,i,1])
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
@@ -190,7 +188,7 @@ while ret:
                 cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
                 cv2.rectangle(frame, (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
                 y = startY - 15 if startY-15>15 else startY+15
-                cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255,255,255), 1)
+                cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)
 
     template=-1
     (template, top_left, scale, val) = GetSignSingle(frame)
@@ -236,9 +234,9 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(copyimg,'Turn_Right',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 turn_right()
-            # elif ret :
-            #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-            #     stop()
+            elif ret :
+                cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+                stop()
             else :
                 cv2.putText(copyimg,'Direct',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 print("direct")
@@ -265,7 +263,7 @@ while ret:
                 break
 
     #บันทึกวิดีโอ
-cap.release()
+# cap.release()
 cv2.destroyAllWindows
 
 
