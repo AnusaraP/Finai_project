@@ -33,6 +33,7 @@ def stop ():
     print ("Stop")
 
 
+
 def detact_navigation_object (img):
     return 
 
@@ -116,7 +117,7 @@ def GetSignSingle(imgframe):
 
 # cap = cv2.VideoCapture(".\\video\\newvideo6.mp4")
 cap = cv2.VideoCapture(0)
-img = cv2.imread(".\\img\\14t.png")
+img = cv2.imread(".\\img\\15t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 ret, frame = cap.read()
 
@@ -179,16 +180,18 @@ while ret:
 
         for i in np.arange(0, detections.shape[2]):
             percent = detections[0,0,i,2]
+
             #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
             if percent > 0.8:
                 class_index = int(detections[0,0,i,1])
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
+                
             #ส่วนตกแต่งสามารถลองแก้กันได้ วาดกรอบและชื่อ
                 label = "{} [{:.2f}%]".format(CLASSES[class_index], percent*100)
                 cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
                 cv2.rectangle(frame, (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
-                cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,0,255),2)
+                cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_DUPLEX,1,(0,255,255),2)
                 y = startY - 15 if startY-15>15 else startY+15
                 cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)
                
