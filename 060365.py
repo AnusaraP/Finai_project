@@ -1,3 +1,4 @@
+from turtle import rt
 import cv2
 import numpy as np
 import threading
@@ -115,8 +116,8 @@ def GetSignSingle(imgframe):
 
 
 
-# cap = cv2.VideoCapture(".\\video\\newvideo6.mp4")
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(".\\video\\newvideo6.mp4")
+# cap = cv2.VideoCapture(0)
 img = cv2.imread(".\\img\\15t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 ret, frame = cap.read()
@@ -180,13 +181,12 @@ while ret:
 
         for i in np.arange(0, detections.shape[2]):
             percent = detections[0,0,i,2]
-
+            
             #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
             if percent > 0.8:
                 class_index = int(detections[0,0,i,1])
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
-                
             #ส่วนตกแต่งสามารถลองแก้กันได้ วาดกรอบและชื่อ
                 label = "{} [{:.2f}%]".format(CLASSES[class_index], percent*100)
                 cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
@@ -222,16 +222,16 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(frame,'Turn_Right',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 turn_right()
-            # elif ret :
-            #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-            #     stop()
+            # elif percent :
+            #     cv2.putText(frame,'stop',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+            #     print("Stop")
             else :
                 cv2.putText(frame,'Direct',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 print("direct")
 
-            # if ret :
-            #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-            #     stop()
+            if percent :
+                cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+                print("Stop")
             
 
             print(center_match)
@@ -245,13 +245,16 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(copyimg,'Turn_Right',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 turn_right()
-            # elif ret :
+            # elif percent :
             #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-            #     stop()
+            #     print("Stop")
             else :
                 cv2.putText(copyimg,'Direct',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 print("direct")
 
+            if percent :
+                cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+                print("Stop")
     
         frame[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=255
         copyimg[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=100
