@@ -229,9 +229,9 @@ while ret:
                 cv2.putText(frame,'Direct',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 print("direct")
 
-            if percent :
-                cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-                print("Stop")
+                if percent :
+                    cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+                    stop()
             
 
             print(center_match)
@@ -252,9 +252,9 @@ while ret:
                 cv2.putText(copyimg,'Direct',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 print("direct")
 
-            if percent :
-                cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-                print("Stop")
+                if percent :
+                    cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+                    stop()
     
         frame[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=255
         copyimg[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=100
