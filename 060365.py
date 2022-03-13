@@ -1,9 +1,11 @@
 from turtle import rt
 import cv2
+from cv2 import imshow
 import numpy as np
 import threading
 import time
 from numpy.core.fromnumeric import put
+# import matplotlib.pyplot as plt
 # from matplotlib import pyplot as plt
 
 #รายชื่อหมวดหมู่ทั้งหมด เรียงตามลำดับ
@@ -34,13 +36,11 @@ def stop ():
     print ("Stop")
 
 
-
 def detact_navigation_object (img):
     return 
 
+
 trafficconeTemplate1 = cv2.imread(".\\Cone\\1.png")
-
-
 trafficconeTemplate = cv2.cvtColor(trafficconeTemplate1,cv2.COLOR_BGR2HSV)
 trafficconeTemplate = cv2.inRange(trafficconeTemplate,lower,upper)
 
@@ -116,8 +116,8 @@ def GetSignSingle(imgframe):
 
 
 
-cap = cv2.VideoCapture(".\\video\\newvideo6.mp4")
-# cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(".\\video\\newvideo6.mp4")
+cap = cv2.VideoCapture(0)
 img = cv2.imread(".\\img\\15t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 ret, frame = cap.read()
@@ -126,32 +126,6 @@ ret, frame = cap.read()
 # fourcc = cv2.VideoWriter_fourcc(*'XVID')
 # output = cv2.VideoWriter('newvideo7.mp4',fourcc,20.0,(640,480)) 
 
-# def detection_func():
-#     while True:
-# 	#เริ่มอ่านในแต่ละเฟรม
-#         ret, frame = cap.read()
-#         if ret:
-#             (h,w) = frame.shape[:2]
-#             #ทำpreprocessing
-#             blob = cv2.dnn.blobFromImage(frame, 0.007843, (300,300), 127.5)
-#             net.setInput(blob)
-#             #feedเข้าmodelพร้อมได้ผลลัพธ์ทั้งหมดเก็บมาในตัวแปร detections
-#             detections = net.forward()
-
-#             for i in np.arange(0, detections.shape[2]):
-#                 percent = detections[0,0,i,2]
-#                 #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
-#                 if percent > 0.5:
-#                     class_index = int(detections[0,0,i,1])
-#                     box = detections[0,0,i,3:7]*np.array([w,h,w,h])
-#                     (startX, startY, endX, endY) = box.astype("int")
-#                 #ส่วนตกแต่งสามารถลองแก้กันได้ วาดกรอบและชื่อ
-#                     label = "{} [{:.2f}%]".format(CLASSES[class_index], percent*100)
-#                     cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
-#                     cv2.rectangle(frame, (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
-#                     y = startY - 15 if startY-15>15 else startY+15
-#                     cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255,255,255), 1)
-#         break
 
 hw,hh=(700,700)
 focus=(800,500)
@@ -178,24 +152,31 @@ while ret:
         net.setInput(blob)
         #feedเข้าmodelพร้อมได้ผลลัพธ์ทั้งหมดเก็บมาในตัวแปร detections
         detections = net.forward()
-
-        for i in np.arange(0, detections.shape[2]):
+        for i in np.arange(0, detections.shape[1]):
             percent = detections[0,0,i,2]
-            
+
             #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
             if percent > 0.8:
                 class_index = int(detections[0,0,i,1])
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
+            
+                cropped = frame[startX:endY ,startY:endX]  # If used on the image trex.png this encapsulates its head
+                cv2.imshow("Cropped image", cropped)
+
+
+                
             #ส่วนตกแต่งสามารถลองแก้กันได้ วาดกรอบและชื่อ
                 label = "{} [{:.2f}%]".format(CLASSES[class_index], percent*100)
                 cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[class_index], 2)
-                cv2.rectangle(frame, (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
+                cv2.rectangle(frame,  (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
                 cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_DUPLEX,1,(0,255,255),2)
                 y = startY - 15 if startY-15>15 else startY+15
                 cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)
-               
-            
+                    
+                
+                print(startX, startY, endX, endY)
+                
 
     template=-1
     (template, top_left, scale, val) = GetSignSingle(frame)
@@ -222,16 +203,13 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(frame,'Turn_Right',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 turn_right()
-            # elif percent :
+            # elif stop :
             #     cv2.putText(frame,'stop',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
             #     print("Stop")
             else :
                 cv2.putText(frame,'Direct',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 print("direct")
 
-                if percent :
-                    cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-                    stop()
             
 
             print(center_match)
@@ -245,16 +223,13 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(copyimg,'Turn_Right',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 turn_right()
-            # elif percent :
+            # elif stop :
             #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
             #     print("Stop")
             else :
                 cv2.putText(copyimg,'Direct',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 print("direct")
 
-                if percent :
-                    cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
-                    stop()
     
         frame[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=255
         copyimg[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=100
@@ -269,7 +244,10 @@ while ret:
     #     output.write(frame)
     
     cv2.imshow("Original",frame)
-    cv2.imshow("Img",copyimg)
+    # cv2.imshow("Img",copyimg)
+    # cv2.imshow("pp",detections)
+    # cv2.imshow(126, (130 ,550) ,480,frame)
+
     
     ret, frame = cap.read()
     
