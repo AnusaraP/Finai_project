@@ -39,6 +39,8 @@ def stop ():
 def detact_navigation_object (img):
     return 
 
+# def Cropped_image (startX, startY, endX, endY) :
+#     return
 
 trafficconeTemplate1 = cv2.imread(".\\Cone\\1.png")
 trafficconeTemplate = cv2.cvtColor(trafficconeTemplate1,cv2.COLOR_BGR2HSV)
@@ -160,11 +162,10 @@ while ret:
                 class_index = int(detections[0,0,i,1])
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
-            
-                cropped = frame[startX:endY ,startY:endX]  # If used on the image trex.png this encapsulates its head
+                  
+
+                cropped = frame[startX:endY, startY:endX]  # If used on the image trex.png this encapsulates its head
                 cv2.imshow("Cropped image", cropped)
-
-
                 
             #ส่วนตกแต่งสามารถลองแก้กันได้ วาดกรอบและชื่อ
                 label = "{} [{:.2f}%]".format(CLASSES[class_index], percent*100)
@@ -173,9 +174,9 @@ while ret:
                 cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_DUPLEX,1,(0,255,255),2)
                 y = startY - 15 if startY-15>15 else startY+15
                 cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)
-                    
+                # cv2.imshow("Cropped image", label)   
                 
-                print(startX, startY, endX, endY)
+                # print(startX, startY, endX, endY)
                 
 
     template=-1
