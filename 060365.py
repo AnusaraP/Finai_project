@@ -1,3 +1,4 @@
+from array import array
 from turtle import rt
 import cv2
 from cv2 import imshow
@@ -38,6 +39,9 @@ def stop ():
 
 def detact_navigation_object (img):
     return 
+
+def crop_video (crop):
+    return
 
 # def Cropped_image (startX, startY, endX, endY) :
 #     return
@@ -116,12 +120,12 @@ def GetSignSingle(imgframe):
     else:
         return (curMaxTemplate%3, curMaxLoc, 1 - int(curMaxTemplate/3)*0.2, curMaxVal)
 
-
-
 # cap = cv2.VideoCapture(".\\video\\newvideo6.mp4")
 cap = cv2.VideoCapture(0)
 img = cv2.imread(".\\img\\15t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
+# crop = cv2.
+
 ret, frame = cap.read()
 
 #บันทึกวิดีโอ
@@ -158,14 +162,15 @@ while ret:
             percent = detections[0,0,i,2]
 
             #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
-            if percent > 0.8:
+            if percent > 0.5:
                 class_index = int(detections[0,0,i,1])
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
-                  
-
+    
+                
                 cropped = frame[startX:endY, startY:endX]  # If used on the image trex.png this encapsulates its head
                 cv2.imshow("Cropped image", cropped)
+                # print(cropped)
                 
             #ส่วนตกแต่งสามารถลองแก้กันได้ วาดกรอบและชื่อ
                 label = "{} [{:.2f}%]".format(CLASSES[class_index], percent*100)
@@ -204,8 +209,8 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(frame,'Turn_Right',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 turn_right()
-            # elif stop :
-            #     cv2.putText(frame,'stop',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+            # elif cropped :
+            #     cv2.putText(cropped,'stop',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
             #     print("Stop")
             else :
                 cv2.putText(frame,'Direct',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
@@ -224,8 +229,8 @@ while ret:
             elif safezone_val < 100 :
                 cv2.putText(copyimg,'Turn_Right',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
                 turn_right()
-            # elif stop :
-            #     cv2.putText(copyimg,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
+            # elif cropped :
+            #     cv2.putText(cropped,'stop',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
             #     print("Stop")
             else :
                 cv2.putText(copyimg,'Direct',(20,300),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255),2)
@@ -246,10 +251,8 @@ while ret:
     
     cv2.imshow("Original",frame)
     # cv2.imshow("Img",copyimg)
-    # cv2.imshow("pp",detections)
-    # cv2.imshow(126, (130 ,550) ,480,frame)
-
     
+
     ret, frame = cap.read()
     
     if cv2.waitKey(1) & 0xFF== ord('q'):
