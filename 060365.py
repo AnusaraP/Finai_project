@@ -9,6 +9,7 @@ from numpy.core.fromnumeric import put
 # import matplotlib.pyplot as plt
 # from matplotlib import pyplot as plt
 
+
 #รายชื่อหมวดหมู่ทั้งหมด เรียงตามลำดับ
 CLASSES = ["BACKGROUND", "AEROPLANE", "BICYCLE", "BIRD", "BOAT",
 	"BOTTLE", "BUS", "CAR", "CAT", "CHAIR", "COW", "DININGTABLE",
@@ -124,7 +125,9 @@ def GetSignSingle(imgframe):
 cap = cv2.VideoCapture(0)
 img = cv2.imread(".\\img\\15t.png")
 img = cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
-# crop = cv2.
+
+crop = cv2.imread(".\\img\\15t.png")
+crop = cv2.cvtColor(crop,cv2.COLOR_BGRA2GRAY)
 
 ret, frame = cap.read()
 
@@ -149,6 +152,7 @@ while ret:
 
     copyimg = img.copy()
 
+
     # if not ret:
     #     break
     if ret:
@@ -163,11 +167,10 @@ while ret:
 
             #กรองเอาเฉพาะค่าpercentที่สูงกว่า0.5 เพิ่มลดได้ตามต้องการ
             if percent > 0.5:
-                class_index = int(detections[0,0,i,1])
+                class_index = int(detections[0,0,i,1]) 
                 box = detections[0,0,i,3:7]*np.array([w,h,w,h])
                 (startX, startY, endX, endY) = box.astype("int")
-    
-                
+
                 cropped = frame[startX:endY, startY:endX]  # If used on the image trex.png this encapsulates its head
                 cv2.imshow("Cropped image", cropped)
                 # print(cropped)
@@ -178,11 +181,10 @@ while ret:
                 cv2.rectangle(frame,  (startX-1, startY-30), (endX+1, startY), COLORS[class_index], cv2.FILLED)
                 cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_DUPLEX,1,(0,255,255),2)
                 y = startY - 15 if startY-15>15 else startY+15
-                cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)
-                # cv2.imshow("Cropped image", label)   
-                
+                cv2.putText(frame, label, (startX+20, y+5), cv2.FONT_HERSHEY_DUPLEX, 0.6, (0,255,255), 1)                  
                 # print(startX, startY, endX, endY)
-                
+
+               
 
     template=-1
     (template, top_left, scale, val) = GetSignSingle(frame)
@@ -216,10 +218,15 @@ while ret:
                 cv2.putText(frame,'Direct',(20,450),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(23,55,255),2)
                 print("direct")
 
-            
+            person = crop[center_match[0], center_match[1]]
+            if person :
+                cv2.putText(frame,'stop',(20,300),cv2.FONT_HERSHEY_DUPLEX,1,(0,255,255),2)
+                stop()
+
 
             print(center_match)
             print(img[center_match[0], center_match[1]])
+            print(crop[center_match[0], center_match[1]])
 
             #Safe zoon บนภาพวาด
             safezone_val = img[center_match[0], center_match[1]]
@@ -239,6 +246,8 @@ while ret:
     
         frame[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=255
         copyimg[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=100
+
+        crop[center_match[0]:center_match[0]+10,center_match[1]:center_match[1]+10]=0
 
         
         cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 3)
